@@ -37,4 +37,4 @@ RUN uv sync --frozen
 EXPOSE 4567
 
 # Run the application as the non-root user
-CMD ["uv", "run", "gunicorn", "--bind=0.0.0.0:4567", "app.run:app"]
+CMD ["uv", "run", "gunicorn", "--bind=0.0.0.0:4567", "app.run:app()"]
