@@ -1,120 +1,97 @@
-import logging
-from datetime import date
-
 import pandas as pd
 import plotly.express as px
 
-logger = logging.getLogger(__name__)
-
 
 class FigureService:
-    def __init__(self, database_service) -> None:
+    def __init__(self, database_service):
         self.database_service = database_service
 
-    def get_number_of_repositories_with_standards_label_dashboard(self):
-        return
+    def get_latency_data(self):
+        # Stub data for latency
+        data = {
+            "Time": ["10:00", "10:05", "10:10", "10:15", "10:20"],
+            "Latency (ms)": [120, 150, 100, 200, 170],
+        }
+        df = pd.DataFrame(data)
 
-    def get_stubbed_number_of_repositories_with_standards_label_dashboard(self):
-
-        return
-
-    def get_stubbed_number_of_repositories_archived_by_automation(self):
-
-        return
-
-    def get_stubbed_sentry_transactions_used(self):
-
-        return
-
-    def get_support_stats(self):
-        support_stats_csv = pd.read_csv("data/support-stats.csv")
-        support_stats_csv_pivoted = pd.melt(
-            support_stats_csv,
-            value_vars=[
-                "January",
-                "February",
-                "March",
-                "April",
-                "May",
-                "June",
-                "July",
-                "August",
-                "September",
-                "October",
-                "November",
-                "December",
-            ],
-            id_vars=["Request Type", "Total"],
-            value_name="Count",
-            var_name="Month",
-            ignore_index=True,
-        )
-
-        fig_support_stats = px.line(
-            support_stats_csv_pivoted,
-            x="Month",
-            y="Count",
-            color="Request Type",
-            title="🏋️ Support Stats",
+        # Create a line graph
+        fig = px.line(
+            df,
+            x="Time",
+            y="Latency (ms)",
+            title="Latency Over Time",
             markers=True,
             template="plotly_dark",
         )
-
-        return fig_support_stats
-
-    def get_support_stats_year_to_date(self):
-        support_requests_all = pd.read_csv("production/support_request_stats.csv")
-        support_requests_all = (
-            support_requests_all.groupby(by=["Date", "Type"])
-            .size()
-            .reset_index(name="Count")
+        fig.add_hline(
+            y=200, line_dash="dash", line_color="red", annotation_text="Threshold"
         )
 
-        fig_support_stats_year_to_date = px.line(
-            support_requests_all,
-            x="Date",
-            y="Count",
-            color="Type",
-            title="Support Requests by Type - Year to Date",
+        return fig
+
+    def get_traffic_data(self):
+        # Stub data for traffic
+        data = {
+            "Time": ["10:00", "10:05", "10:10", "10:15", "10:20"],
+            "Requests per Second": [50, 60, 45, 70, 65],
+        }
+        df = pd.DataFrame(data)
+
+        # Create a bar chart
+        fig = px.bar(
+            df,
+            x="Time",
+            y="Requests per Second",
+            title="Traffic Over Time",
             template="plotly_dark",
         )
 
-        return fig_support_stats_year_to_date
+        return fig
 
-    def get_support_stats_current_month(self):
-        month = date.today().month
-        support_requests_current_month = pd.read_csv(
-            "production/support_request_stats.csv"
-        )
-        support_requests_current_month["Date"] = pd.to_datetime(
-            support_requests_current_month["Date"], format="%Y-%m-%d"
-        )
-        support_requests_current_month = support_requests_current_month.loc[
-            support_requests_current_month["Date"].dt.month == month
-        ]
-        support_requests_current_month["Total"] = (
-            support_requests_current_month.groupby("Date")["Type"].transform("size")
-        )
+    def get_error_data(self):
+        # Stub data for errors
+        data = {
+            "Time": ["10:00", "10:05", "10:10", "10:15", "10:20"],
+            "Error Rate (%)": [1.5, 2.0, 0.5, 3.0, 2.5],
+        }
+        df = pd.DataFrame(data)
 
-        fig_support_stats_current_month = px.bar(
-            support_requests_current_month,
-            x="Date",
-            y="Type",
-            color="Type",
-            title="Support Requests by Type - Current Month",
+        # Create an area chart
+        fig = px.area(
+            df,
+            x="Time",
+            y="Error Rate (%)",
+            title="Error Rate Over Time",
             template="plotly_dark",
         )
+        fig.add_hline(
+            y=2.5, line_dash="dash", line_color="orange", annotation_text="Alert Level"
+        )
 
-        return fig_support_stats_current_month
+        return fig
 
-    def get_github_actions_quota_usage_cumulative(self):
-        return
+    def get_saturation_data(self):
+        # Stub data for saturation
+        data = {
+            "Time": ["10:00", "10:05", "10:10", "10:15", "10:20"],
+            "CPU Utilization (%)": [50, 70, 60, 80, 75],
+        }
+        df = pd.DataFrame(data)
 
-    def get_sentry_transactions_usage(self):
-        return
+        # Create a line graph with markers
+        fig = px.line(
+            df,
+            x="Time",
+            y="CPU Utilization (%)",
+            title="CPU Saturation Over Time",
+            markers=True,
+            template="plotly_dark",
+        )
+        fig.add_hline(
+            y=80,
+            line_dash="dash",
+            line_color="red",
+            annotation_text="Critical Threshold",
+        )
 
-    def get_sentry_errors_usage(self):
-        return
-
-    def get_sentry_replays_usage(self):
-        return
+        return fig
