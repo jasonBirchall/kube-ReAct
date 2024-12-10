@@ -27,7 +27,7 @@ def create_app() -> Flask:
 
     logger.info("Populating stub data...")
     server.database_service.create_indicators_table()
-    # server.database_service.clean_stubbed_indicators_table()
+    server.database_service.clean_stubbed_indicators_table()
 
     app = Dash(__name__, server=server, url_base_pathname="/dashboard/")
     app.title = "⚙️ SLO dashboard"
@@ -103,27 +103,6 @@ def create_dashboard(figure_service: FigureService):
                     figure=figure_service.get_sentry_replays_usage(),
                     style={
                         "width": "50%",
-                        "height": "500px",
-                        "display": "inline-block",
-                    },
-                ),
-                html.H2("Github Actions Quota"),
-                dcc.Graph(
-                    figure=figure_service.get_github_actions_quota_usage_cumulative()[
-                        0
-                    ],
-                    style={
-                        "width": "100%",
-                        "height": "500px",
-                        "display": "inline-block",
-                    },
-                ),
-                dcc.Graph(
-                    figure=figure_service.get_github_actions_quota_usage_cumulative()[
-                        1
-                    ],
-                    style={
-                        "width": "100%",
                         "height": "500px",
                         "display": "inline-block",
                     },
