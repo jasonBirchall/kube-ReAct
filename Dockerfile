@@ -2,7 +2,7 @@ FROM python:3.12.0-slim
 
 RUN groupadd -r user && useradd -r -g user 1051
 
-WORKDIR /home/operations-engineering-kubera
+WORKDIR /home/kubera
 
 COPY Pipfile Pipfile
 COPY Pipfile.lock Pipfile.lock
