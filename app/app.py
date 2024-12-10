@@ -8,8 +8,6 @@ from flask import Flask
 from app.config.app_config import app_config
 from app.config.logging_config import configure_logging
 from app.config.routes_config import configure_routes
-from app.services.database_service import DatabaseService
-from app.services.figure_service import FigureService
 
 logger = logging.getLogger(__name__)
 
@@ -21,30 +19,40 @@ def create_app() -> Flask:
 
     server = Flask(__name__)
 
-    server.database_service = DatabaseService()
-    server.figure_service = FigureService(server.database_service)
-
     configure_routes(server)
 
     app = Dash(__name__, server=server, url_base_pathname="/dashboard/")
     app.title = "⚙️ SRE Dashboard"
-    app.layout = create_dashboard(server.figure_service)
+    app.layout = create_dashboard()
 
     logger.info("Running app...")
 
     return app.server
 
 
-def create_dashboard(figure_service: FigureService):
-    """
-    Creates a standard SRE dashboard layout with the Four Golden Signals:
-    Latency, Traffic, Errors, and Saturation.
-    """
-
+def create_dashboard():
     def dashboard():
         return html.Div(
             children=[
-                html.H1("☸️ Agent-Based RCA Dashboard for Kubernetes"),
+                # Header Section
+                html.Div(
+                    children=[
+                        html.H1(
+                            "☸️ Agent-Based RCA Dashboard for Kubernetes",
+                            style={"text-align": "center", "margin-bottom": "20px"},
+                        ),
+                        html.Div(
+                            "Cluster Status: Healthy",
+                            style={
+                                "text-align": "center",
+                                "color": "green",
+                                "font-weight": "bold",
+                                "margin-bottom": "20px",
+                            },
+                        ),
+                    ],
+                    style={"margin-bottom": "20px"},
+                ),
                 # System Overview
                 html.Div(
                     children=[
@@ -81,98 +89,41 @@ def create_dashboard(figure_service: FigureService):
                     ],
                     style={"margin-bottom": "20px"},
                 ),
-                # Actionable Recommendations
+                # RCA Results
                 html.Div(
                     children=[
-                        html.H2("Actionable Recommendations"),
-                        dcc.Graph(
-                            figure=px.bar(
-                                get_recommendations(),
-                                x="Action",
-                                y="Justification",
-                                title="Recommended Actions",
-                                template="plotly_dark",
-                            )
+                        html.H2("Root Cause Analysis Results"),
+                        html.Div(
+                            children=[
+                                html.Div(
+                                    children=[
+                                        html.H4("Identified Issue: High CPU Usage"),
+                                        html.P(
+                                            "Recommendation: Increase CPU limits for pod 'example-pod'."
+                                        ),
+                                    ],
+                                    style={
+                                        "border": "1px solid white",
+                                        "padding": "10px",
+                                        "margin-bottom": "10px",
+                                    },
+                                ),
+                                html.Div(
+                                    children=[
+                                        html.H4("Identified Issue: CrashLoopBackOff"),
+                                        html.P(
+                                            "Recommendation: Restart 'service-a' to resolve CrashLoopBackOff."
+                                        ),
+                                    ],
+                                    style={
+                                        "border": "1px solid white",
+                                        "padding": "10px",
+                                    },
+                                ),
+                            ]
                         ),
                     ],
                     style={"margin-bottom": "20px"},
-                ),
-                # Incident History (Stub)
-                html.Div(
-                    children=[
-                        html.H2("Incident History"),
-                        html.P(
-                            "No incidents to display yet. RCA results will appear here."
-                        ),
-                    ],
-                    style={"margin-bottom": "20px"},
-                ),
-                # System Dependencies (Stub)
-                html.Div(
-                    children=[
-                        html.H2("System Dependencies"),
-                        html.P(
-                            "Visualisation of service-to-pod and pod-to-database relationships."
-                        ),
-                    ],
-                ),
-                html.Div(
-                    children=[
-                        html.H2("Latency"),
-                        dcc.Graph(
-                            figure=figure_service.get_latency_data(),  # Placeholder function
-                            style={
-                                "width": "100%",
-                                "height": "500px",
-                                "display": "inline-block",
-                            },
-                        ),
-                    ],
-                    style={"margin-bottom": "20px"},
-                ),
-                # Traffic
-                html.Div(
-                    children=[
-                        html.H2("Traffic"),
-                        dcc.Graph(
-                            figure=figure_service.get_traffic_data(),  # Placeholder function
-                            style={
-                                "width": "100%",
-                                "height": "500px",
-                                "display": "inline-block",
-                            },
-                        ),
-                    ],
-                    style={"margin-bottom": "20px"},
-                ),
-                # Errors
-                html.Div(
-                    children=[
-                        html.H2("Errors"),
-                        dcc.Graph(
-                            figure=figure_service.get_error_data(),  # Placeholder function
-                            style={
-                                "width": "100%",
-                                "height": "500px",
-                                "display": "inline-block",
-                            },
-                        ),
-                    ],
-                    style={"margin-bottom": "20px"},
-                ),
-                # Saturation
-                html.Div(
-                    children=[
-                        html.H2("Saturation"),
-                        dcc.Graph(
-                            figure=figure_service.get_saturation_data(),  # Placeholder function
-                            style={
-                                "width": "100%",
-                                "height": "500px",
-                                "display": "inline-block",
-                            },
-                        ),
-                    ],
                 ),
             ],
             style={
@@ -197,7 +148,6 @@ def get_cluster_overview():
 
 
 def get_diagnostic_workflow():
-    # Replace details with proper timestamps for x_start and x_end
     data = {
         "Step": ["Fetch Logs", "Check CPU", "Inspect Config"],
         "x_start": [
