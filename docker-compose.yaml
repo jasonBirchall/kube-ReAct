@@ -2,24 +2,15 @@ version: "3.9"
 services:
   app:
     build: .
-    image: "kubera"
+    image: "kubera:latest"
     container_name: "kubera"
-    environment:
-      AUTH_ENABLED: false
-      POSTGRES_PASSWORD: admin
-      POSTGRES_USER: admin
-      POSTGRES_DB: admin
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: 5432
-      APP_SECRET_KEY: dev
-      FLASK_DEBUG: true
-      API_KEY: test
+    env_file:
+      - .env
     ports:
       - "4567:4567"
     depends_on:
       postgres:
         condition: service_healthy
-        restart: true
     networks:
       - kubera
 
@@ -29,11 +20,11 @@ services:
     ports:
       - 5432:5432
     environment:
-      - POSTGRES_PASSWORD=admin
-      - POSTGRES_USER=admin
-      - POSTGRES_DB=admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: admin
+      POSTGRES_DB: admin
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U admin" ]
+      test: ["CMD-SHELL", "pg_isready -U admin"]
       interval: 10s
       timeout: 5s
       retries: 5

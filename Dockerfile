@@ -1,23 +1,40 @@
 FROM python:3.12.0-slim
 
-RUN groupadd -r user && useradd -r -g user 1051
+# Copy UV binary from its official container
+COPY --from=ghcr.io/astral-sh/uv:0.5.7 /uv /bin/
 
-WORKDIR /home/kubera
+# Set up a non-root user
+RUN groupadd -g 1000 appgroup && \
+  useradd -m -u 1000 -g appgroup appuser
 
-COPY Pipfile Pipfile
-COPY Pipfile.lock Pipfile.lock
+# Set the working directory and user environment
+WORKDIR /app
+ENV HOME=/app
+ENV UV_CACHE_DIR=/app/.cache/uv
+
+# Pre-create and set ownership for necessary directories
+RUN mkdir -p $UV_CACHE_DIR && chown -R appuser:appgroup /app
+
+# Switch to the non-root user
+USER appuser
+
+# Copy dependency files
+COPY pyproject.toml pyproject.toml
+COPY uv.lock uv.lock
+
+# Install only the dependencies for better caching
+RUN uv sync --frozen --no-install-project
+
+# Copy application code
 COPY app app
 COPY example-data data
 COPY data/production production
 
-RUN pip3 install --no-cache-dir pipenv
-RUN pipenv install --system --deploy --ignore-pipfile
+# Final sync to install the project
+RUN uv sync --frozen
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-
+# Expose the application's port
 EXPOSE 4567
 
-USER 1051
-
-ENTRYPOINT ["gunicorn", "--bind=0.0.0.0:4567", "app.run:app()"]
+# Run the application as the non-root user
+CMD ["uv", "run", "gunicorn", "--bind=0.0.0.0:4567", "app.run:app"]
