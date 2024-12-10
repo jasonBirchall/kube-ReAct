@@ -1,6 +1,6 @@
-# Kubernetes Root Cause Analysis Dashboard
+# 🤖 Kubernetes Root Cause Analysis Dashboard
 
-## Overview
+## 🗣️ Overview
 
 This project aims to provide a real-time **Site Reliability Engineering (SRE) Dashboard** for Kubernetes environments, focusing on the **Four Golden Signals** (Latency, Traffic, Errors, and Saturation). It integrates an **agent-based diagnostic workflow** powered by Python, Dash, and Kubernetes APIs to visualise system health, provide actionable recommendations, and assist in Root Cause Analysis (RCA).
 
@@ -8,7 +8,7 @@ The dashboard is designed with scalability and usability in mind, making it a va
 
 ---
 
-## Features
+## ⏩ Features
 
 - **Real-Time Visualisation**:
 
@@ -30,7 +30,7 @@ The dashboard is designed with scalability and usability in mind, making it a va
 
 ---
 
-## Project Structure
+## 🌴 Project Structure
 
 ```
 .
@@ -70,7 +70,7 @@ The dashboard is designed with scalability and usability in mind, making it a va
 
 ---
 
-## Getting Started
+## 👶 Getting Started
 
 ### Prerequisites
 
@@ -98,7 +98,7 @@ The dashboard is designed with scalability and usability in mind, making it a va
 
 ---
 
-## Key Concepts
+## 🔑 Key Concepts
 
 ### Four Golden Signals
 
@@ -122,7 +122,7 @@ The dashboard is designed with scalability and usability in mind, making it a va
 
 ---
 
-## Deployment
+## 🐊 Deployment
 
 ### Kubernetes Deployment
 
@@ -146,7 +146,7 @@ The dashboard is designed with scalability and usability in mind, making it a va
 
 ---
 
-## Contributing
+## 🥇 Contributing
 
 Contributions are welcome! Please follow these steps:
 
@@ -170,8 +170,6 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 - [Kubernetes](https://kubernetes.io/) for cluster orchestration.
 - [Helm](https://helm.sh/) for deployment management.
 - Open-source contributors for inspiration and guidance.
-
-```
 
 ```
 
