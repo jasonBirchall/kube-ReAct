@@ -27,7 +27,7 @@ def create_app() -> Flask:
 
     logger.info("Populating stub data...")
     server.database_service.create_indicators_table()
-    server.database_service.clean_stubbed_indicators_table()
+    # server.database_service.clean_stubbed_indicators_table()
 
     app = Dash(__name__, server=server, url_base_pathname="/dashboard/")
     app.title = "⚙️ SLO dashboard"
