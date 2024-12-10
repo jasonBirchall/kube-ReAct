@@ -171,5 +171,3 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 - [Helm](https://helm.sh/) for deployment management.
 - Open-source contributors for inspiration and guidance.
 
-```
-
