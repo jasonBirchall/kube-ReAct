@@ -53,42 +53,6 @@ def create_dashboard():
                     ],
                     style={"margin-bottom": "20px"},
                 ),
-                # System Overview
-                html.Div(
-                    children=[
-                        html.H2("System Overview"),
-                        dcc.Graph(
-                            figure=px.bar(
-                                get_cluster_overview(),
-                                x="Node",
-                                y=["CPU Usage (%)", "Memory Usage (%)"],
-                                barmode="group",
-                                title="Cluster Resource Utilisation",
-                                template="plotly_dark",
-                            )
-                        ),
-                    ],
-                    style={"margin-bottom": "20px"},
-                ),
-                # Diagnostic Workflow
-                html.Div(
-                    children=[
-                        html.H2("Diagnostic Workflow"),
-                        dcc.Graph(
-                            figure=px.timeline(
-                                get_diagnostic_workflow(),
-                                x_start="x_start",
-                                x_end="x_end",
-                                y="Step",
-                                color="Step",
-                                title="RCA Workflow Progress",
-                                hover_name="Details",
-                                template="plotly_dark",
-                            ),
-                        ),
-                    ],
-                    style={"margin-bottom": "20px"},
-                ),
                 # RCA Results
                 html.Div(
                     children=[
@@ -121,6 +85,42 @@ def create_dashboard():
                                     },
                                 ),
                             ]
+                        ),
+                    ],
+                    style={"margin-bottom": "20px"},
+                ),
+                # System Overview
+                html.Div(
+                    children=[
+                        html.H2("System Overview"),
+                        dcc.Graph(
+                            figure=px.bar(
+                                get_cluster_overview(),
+                                x="Node",
+                                y=["CPU Usage (%)", "Memory Usage (%)"],
+                                barmode="group",
+                                title="Cluster Resource Utilisation",
+                                template="plotly_dark",
+                            )
+                        ),
+                    ],
+                    style={"margin-bottom": "20px"},
+                ),
+                # Diagnostic Workflow
+                html.Div(
+                    children=[
+                        html.H2("Diagnostic Workflow"),
+                        dcc.Graph(
+                            figure=px.timeline(
+                                get_diagnostic_workflow(),
+                                x_start="x_start",
+                                x_end="x_end",
+                                y="Step",
+                                color="Step",
+                                title="RCA Workflow Progress",
+                                hover_name="Details",
+                                template="plotly_dark",
+                            ),
                         ),
                     ],
                     style={"margin-bottom": "20px"},
